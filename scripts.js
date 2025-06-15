@@ -11,10 +11,10 @@ const footer = document.querySelector("main footer")
 const description = document.getElementById("description")
 const result = document.getElementById("result")
 
-// Manipulando o input amount para receber  somente numeros.
+// Manipulando o input amount para receber somente numeros.
 amount.addEventListener("input", () =>{
   const hasCharactersRegex = /\D+/g
-  amount.value = amount.value.replace(hasCharactersRegex," ")
+  amount.value = amount.value.replace(hasCharactersRegex,"")
 })
 
 // Captando o evento de submit do formulario
