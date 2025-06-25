@@ -54,6 +54,9 @@ function convertCurrency(amount, price, symbol){
     // Exibe o resultado total.
     result.textContent = `${total} Reais`
 
+    // Limpar os campos do from
+    fromClaer()
+
     // Aplica a classe que exibe o footer para mostrar o resultado.
     footer.classList.add("show-result")
   } catch (error) {
@@ -71,4 +74,15 @@ function formatCurrencyBRL(value) {
     style: "currency",
     currency: "BRL",
   })
+}
+
+
+// Limpando o formulário
+function fromClaer() {
+  // Limpando os campos
+  amount.value = ""
+  currency.value = ""
+
+  // Focando no campo do valor
+  amount.focus()
 }
