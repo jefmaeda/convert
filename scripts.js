@@ -1,7 +1,7 @@
 // Cotação de moedas do dia.
-const USD = 4.87
-const EUR = 5.32
-const GBP = 6.08
+// const USD = 4.87
+// const EUR = 5.32
+// const GBP = 6.08
 
 // Obtendo os elementos do formulario.
 const form = document.querySelector("form")
@@ -17,20 +17,29 @@ amount.addEventListener("input", () =>{
   amount.value = amount.value.replace(hasCharactersRegex,"")
 })
 
-// Captando o evento de submit do formulario
-form.onsubmit = (event) => {
-  event.preventDefault()
+// Captando o evento de submit do formulario (clicar em "Converter")
+form.onsubmit = async (event) => {
+  event.preventDefault() // Impede o recarregamento da página
+
+  // Chama a função para buscar as cotações atuais
+  const exchange = await exchangeRate()
+  if(!exchange) result; // Se houve erro ao buscar, para a execução
   
+  // Verifica qual moeda o usuário escolheu no <select>
   switch (currency.value){
     case "USD":
-      convertCurrency(amount.value, USD, "US$")
+      // Se for dólar, usa a cotação USD vinda da API e passa para a função de conversão
+      convertCurrency(amount.value, exchange.USD, "US$")
       break
     case "EUR":
-      convertCurrency(amount.value, EUR, "€")
+      convertCurrency(amount.value, exchange.EUR, "€")
       break
     case "GBP":
-      convertCurrency(amount.value, GBP, "£")
+      convertCurrency(amount.value, exchange.GBP, "£")
       break
+    default:
+      // Caso o usuário não selecione nada válido
+      alert("Selecione uma moeda válida.");
   }
 }
 
@@ -76,7 +85,6 @@ function formatCurrencyBRL(value) {
   })
 }
 
-
 // Limpando o formulário
 function fromClaer() {
   // Limpando os campos
@@ -85,4 +93,29 @@ function fromClaer() {
 
   // Focando no campo do valor
   amount.focus()
+}
+
+// Busca as cotações mais recentes do dólar, euro e libra
+async function exchangeRate() {
+   // URL da API da AwesomeAPI com os pares BRL (real) para USD, EUR e GBP
+  const url = "https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL,GBP-BRL"
+
+  try {
+    // Faz uma requisição HTTP para a API e espera (await) a resposta
+    const response = await fetch(url);
+
+    // Converte o corpo da resposta em JSON (objeto JavaScript)
+    const data = await response.json();
+
+    // Retorna as cotações extraídas do JSON, convertendo para número com parseFloat
+    return {
+      USD: parseFloat(data.USDBRL.high),
+      EUR: parseFloat(data.EURBRL.high),
+      GBP: parseFloat(data.GBPBRL.high),
+    };
+  } catch (error) {
+    alert("Erro ao buscar as cotações. Tente novamente mais tarde.")
+    // Retorna null para que o restante do código saiba que houve falha
+    return null
+  }
 }
